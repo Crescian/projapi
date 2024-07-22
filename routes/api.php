@@ -14,14 +14,30 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+// Route::post("register", [App\Http\Controllers\UserController::class, 'register']);
+// Route::post("login", [App\Http\Controllers\UserController::class, 'login']);
+
+// Route::group([], function () {
+//     Route::post('profile', [UserController::class, 'profile']);
+// });
+
+// route::get('company', [App\Http\Controllers\CompanyController::class, 'index']);
+// route::get('user', [App\Http\Controllers\UserController::class, 'index']);
 
 Route::post("register", [App\Http\Controllers\UserController::class, 'register']);
 Route::post("login", [App\Http\Controllers\UserController::class, 'login']);
+Route::get('company', [App\Http\Controllers\CompanyController::class, 'index']);
 
-Route::group([], function () {
-    Route::post('profile', [UserController::class, 'profile']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('user', [App\Http\Controllers\UserController::class, 'index']);
+    Route::post('getUserDetails', [App\Http\Controllers\UserController::class, 'getUserDetails']);
 });
-route::get('user', [App\Http\Controllers\UserController::class, 'index']);
+
+// Individual protected route (example, if you still want it separately)
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});

@@ -16,12 +16,11 @@ class UserController extends Controller
         $User = User::all();
         return response()->json(
             [
-                'User' => $User,
+                'User' => $User->company_title,
                 'code' => 200
             ]
         );
     }
-
     public function register(Request $request) 
     {
         try
@@ -47,15 +46,16 @@ class UserController extends Controller
             }
     
             $user = User::create([
-                // 'name' => $request->name,
+                'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'type_of_individual' => $request->type_of_individual,
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
                 'middle_initial' => $request->middle_initial,
-                'position' => $request->posiion,
+                'position' => $request->position,
                 'company' => $request->company,
+                'initial' => $request->initial,
             ]);
     
             return response()->json([
@@ -97,9 +97,10 @@ class UserController extends Controller
             }
             $user = User::where('email',$request->email)->first();
             return response()->json([
-                'status' => true,
-                'message'=> 'User Logged In successfully',
-                'token' => $user->createToken("API TOKEN")->plainTextToken
+                // 'status' => true,
+                // 'message'=> 'User Logged In successfully',
+                'access_token' => $user->createToken("API TOKEN")->plainTextToken,
+                // 'token_type' => 'Bearer',
             ],201);
         } catch (\Throwable $th)
         {
@@ -107,6 +108,20 @@ class UserController extends Controller
                 'status' => false,
                 'message'=> $th->getMessage(),
             ],500);
+        }
+    }
+    public function getUserDetails(Request $request)
+    {
+        // Find the user by email
+        $user = User::where('email', $request->email)->first();
+    
+        // Check if user exists
+        if ($user) {
+            // Return user details as JSON
+            return response()->json($user, 200);
+        } else {
+            // Return error message
+            return response()->json(['error' => 'User not found'], 404);
         }
     }
 }

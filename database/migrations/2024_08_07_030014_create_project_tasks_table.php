@@ -13,11 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('companies', function (Blueprint $table) {
+        Schema::create('project_tasks', function (Blueprint $table) {
             $table->id();
-            $table->integer('bu_company_id');
-            $table->string('company_title');
+            $table->integer('project_id');
+            $table->string('urgency');
+            $table->string('task_title');
+            $table->string('attachments');
             $table->timestamps();
+            $table->string('due_date');
         });
     }
 
@@ -28,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('companies');
+        Schema::dropIfExists('project_tasks');
     }
 };

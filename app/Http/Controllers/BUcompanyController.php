@@ -44,7 +44,7 @@ class BUcompanyController extends Controller
             return response()->json([
                 'status' => true,
                 'message'=> 'BU company Task created successfully',
-                'id' => $buCompany->id // Include the newly created task's id
+                'id' => $buCompany->id
             ],201);
         }catch(\Throwable $th){
             return response()->json([
@@ -60,7 +60,7 @@ class BUcompanyController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
@@ -93,7 +93,7 @@ class BUcompanyController extends Controller
      */
     public function edit(BUcompany $bUcompany)
     {
-        //
+
     }
 
     /**
@@ -116,20 +116,16 @@ class BUcompanyController extends Controller
      */
     public function destroy($id)
     {
-        // Find the project by ID
         $BUcompany = BUcompany::find($id);
 
         if (!$BUcompany) {
-            // Return a 404 response if the project is not found
             return response()->json([
                 'message' => 'BU Company not found'
             ], Response::HTTP_NOT_FOUND);
         }
 
-        // Delete the project
         $BUcompany->delete();
 
-        // Return a 200 response indicating the project was deleted
         return response()->json([
             'message' => 'BU Company deleted successfully'
         ], Response::HTTP_OK);

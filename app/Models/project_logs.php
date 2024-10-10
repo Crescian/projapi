@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class project_logs extends Model
 {
     use HasFactory;
-    protected $table = 'project_logs'; // Specify the table name
+    protected $table = 'project_logs';
     protected $fillable = [
         'project_id', 
         'events',

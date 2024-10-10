@@ -32,7 +32,6 @@ class ProjectCompaniesController extends Controller
         {
             $validateProject = Validator::make($request->all(),
             [
-                // 'company_id' => 'required',
                 'project_id' => 'required',
                 'company_id' => 'required'
             ]);
@@ -69,7 +68,7 @@ class ProjectCompaniesController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
@@ -80,7 +79,7 @@ class ProjectCompaniesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
     }
 
     /**
@@ -91,7 +90,7 @@ class ProjectCompaniesController extends Controller
      */
     public function show(project_companies $project_companies)
     {
-        //
+
     }
 
     /**

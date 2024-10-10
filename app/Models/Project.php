@@ -19,6 +19,5 @@ class Project extends Model
         'standing_agreements',
         'project_status',
         'due_date'
-        // Add other attributes that should be mass assignable
     ];
 }

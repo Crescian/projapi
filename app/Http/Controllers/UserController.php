@@ -8,7 +8,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
-use Laravel\Sanctum\PersonalAccessTokenResult; // Import the PersonalAccessTokenResult class
+use Laravel\Sanctum\PersonalAccessTokenResult;
 
 class UserController extends Controller
 {
@@ -16,12 +16,6 @@ class UserController extends Controller
     {
         $User = User::orderBy('first_name', 'asc')->get();
         return $User;
-        // return response()->json(
-        //     [
-        //         'User' => $User->company_title,
-        //         'code' => 200
-        //     ]
-        // );
     }
     public function register(Request $request) 
     {
@@ -49,7 +43,6 @@ class UserController extends Controller
             }
     
             $user = User::create([
-                // 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'type_of_individual' => $request->type_of_individual,
@@ -80,7 +73,6 @@ class UserController extends Controller
         {
             $validateUser = Validator::make($request->all(),
             [
-                // 'email' => 'required|email',
                 'password' => 'required',
             ]);
     
@@ -101,10 +93,7 @@ class UserController extends Controller
             }
             $user = User::where('email',$request->email)->first();
             return response()->json([
-                // 'status' => true,
-                // 'message'=> 'User Logged In successfully',
                 'access_token' => $user->createToken("API TOKEN")->plainTextToken,
-                // 'token_type' => 'Bearer',
             ],201);
         } catch (\Throwable $th)
         {
@@ -116,41 +105,32 @@ class UserController extends Controller
     }
     public function getUserDetails(Request $request)
     {
-        // Find the user by email
         $user = User::where('email', $request->email)->first();
     
-        // Check if user exists
         if ($user) {
-            // Return user details as JSON
             return response()->json($user, 200);
         } else {
-            // Return error message
             return response()->json(['error' => 'User not found'], 404);
         }
     }
     public function destroy($id)
     {
-        // Find the project by ID
         $user = User::find($id);
 
         if (!$user) {
-            // Return a 404 response if the project is not found
             return response()->json([
                 'message' => 'User not found'
             ], Response::HTTP_NOT_FOUND);
         }
 
-        // Delete the project
         $user->delete();
 
-        // Return a 200 response indicating the project was deleted
         return response()->json([
             'message' => 'User deleted successfully'
         ], Response::HTTP_OK);
     }
     public function update(Request $request, $id)
     {
-        // Validate the incoming request data
         $validatedData = $request->validate([
             'email' => 'required',
             'first_name' => 'required',
@@ -162,13 +142,10 @@ class UserController extends Controller
             'initial' => 'required',
             'type_of_individual' => 'required',
             'company' => 'required',
-            // Add other fields as necessary
         ]);
 
-        // Find the user by ID
         $user = User::findOrFail($id);
 
-        // Update the user with the validated data
         $user->update([
             'email' => $validatedData['email'],
             'first_name' => $validatedData['first_name'],
@@ -182,7 +159,6 @@ class UserController extends Controller
             'company' => $validatedData['company'],
         ]);
 
-        // Return a response, usually a success message or the updated resource
         return response()->json([
             'message' => 'User updated successfully!',
             'user' => $user

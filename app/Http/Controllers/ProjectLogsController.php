@@ -44,7 +44,7 @@ class ProjectLogsController extends Controller
             return response()->json([
                 'status' => true,
                 'message'=> 'Project logs created successfully',
-                'id' => $projectLogs->id // Include the newly created task's id
+                'id' => $projectLogs->id
             ],201);
         }catch(\Throwable $th){
             return response()->json([
@@ -82,17 +82,12 @@ class ProjectLogsController extends Controller
      */
     public function show($projectLogsId)
     {
-        // Fetch the item by ID
         $projectLogs = project_logs::where('project_id', $projectLogsId)->get();
 
-        // Check if the item exists
         if (!$projectLogs) {
             return response()->json(['message' => 'Item not found'], 404);
         }
-
-        // Return the item as a JSON response
         return response()->json($projectLogs, 200);
-        
     }
 
     /**

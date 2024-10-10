@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class notifications extends Model
 {
     use HasFactory;
-    protected $table = 'notifications'; // Make sure this matches your table name
+    protected $table = 'notifications';
     protected $fillable = [
         'id', 
         'project_id',

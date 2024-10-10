@@ -68,7 +68,7 @@ class ProjectTaskInvolvedActivityLogsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
     }
 
     /**
@@ -79,8 +79,6 @@ class ProjectTaskInvolvedActivityLogsController extends Controller
      */
     public function show($id)
     {
-        // Fetch the item by ID
-        // $projectTask = ProjectTask::find($id);
         
         $project_task_involved_activity_logs = project_task_involved_activity_logs::select(
             'project_task_involved_activity_logs.id',
@@ -98,15 +96,12 @@ class ProjectTaskInvolvedActivityLogsController extends Controller
         ->join('users', 'users.id', '=', 'project_task_involved_activity_logs.users_id')
         ->where('project_task_involved_activity_logs.project_task_id', $id)
         ->get();
-        // $project_task_involved_activity_logs = project_task_involved_activity_logs::where('project_task_id', $id)->get();
 
 
-        // Check if the item exists
         if (!$project_task_involved_activity_logs) {
             return response()->json(['message' => 'Item not found'], 404);
         }
 
-        // Return the item as a JSON response
         return response()->json($project_task_involved_activity_logs, 200);
         
     }
@@ -119,7 +114,6 @@ class ProjectTaskInvolvedActivityLogsController extends Controller
      */
     public function edit(project_task_involved_activity_logs $project_task_involved_activity_logs)
     {
-        //
     }
 
     /**

@@ -67,10 +67,6 @@ class ProjectController extends Controller
         )
         ->orderBy('projects.project_title', 'asc')
         ->get();
-    
-    
-    
-        
         return $projects;
     }
 
@@ -80,7 +76,6 @@ class ProjectController extends Controller
         {
             $validateProject = Validator::make($request->all(),
             [
-                // 'company_id' => 'required',
                 'project_title' => 'required',
                 'urgency' => 'required',
                 'project_requirements' => 'required',
@@ -99,7 +94,6 @@ class ProjectController extends Controller
             }
     
             $project = Project::create([
-                // 'company_id' => $request->company_id,
                 'project_title' => $request->project_title,
                 'urgency' => $request->urgency,
                 'project_requirements' => $request->project_requirements,
@@ -112,7 +106,7 @@ class ProjectController extends Controller
             return response()->json([
                 'status' => true,
                 'message'=> 'Project created successfully',
-                'id' => $project->id  // Return the ID of the created project
+                'id' => $project->id
             ],201);
         }catch(\Throwable $th){
             return response()->json([
@@ -129,7 +123,7 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
@@ -152,9 +146,7 @@ class ProjectController extends Controller
     
      public function show()
      {
-         // Fetch the item by ID
-         // $projectTask = ProjectTask::find($id);
-        $results = Project::query() // Start a query with the Project model
+        $results = Project::query()
         ->selectRaw('count(*) as projects')
         ->selectRaw('(SELECT count(*) FROM projects WHERE project_status = ?) as project_completed', ['completed'])
         ->selectRaw('(SELECT count(*) FROM projects WHERE project_status = ?) as project_in_progress', ['in_progress'])
@@ -164,22 +156,16 @@ class ProjectController extends Controller
         ->selectRaw('(SELECT count(*) FROM project_tasks WHERE project_task_status = ?) as task_completed', ['completed'])
         ->selectRaw('(SELECT count(*) FROM project_tasks WHERE project_task_status = ?) as task_ongoing', ['ongoing'])
         ->first();
-
-         // $projects = project_task_individual_involved::where('project_task_id', $projectTaskId)->get();
  
-         // Check if the item exists
          if (!$results) {
              return response()->json(['message' => 'Item not found'], 404);
          }
-         // Return the item as a JSON response
          return response()->json($results, 200);
      }
 
      public function show2()
-     {
-         // Fetch the item by ID
-         // $projectTask = ProjectTask::find($id);        
-         $results = Project::query() // Start a query with the Project model
+     {  
+         $results = Project::query()
          ->selectRaw("
              COUNT(*) as total_projects,
              SUM(CASE WHEN project_status = 'uninitiated' THEN 1 ELSE 0 END) AS uninitiated,
@@ -189,13 +175,9 @@ class ProjectController extends Controller
          ")
          ->first();
 
-         // $projects = project_task_individual_involved::where('project_task_id', $projectTaskId)->get();
- 
-         // Check if the item exists
          if (!$results) {
              return response()->json(['message' => 'Item not found'], 404);
          }
-         // Return the item as a JSON response
          return response()->json($results, 200);
      }
     /**
@@ -206,7 +188,7 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        //
+
     }
 
     /**
@@ -218,21 +200,16 @@ class ProjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Validate the incoming request data
         $validatedData = $request->validate([
             'project_status' => 'required',
-            // Add other fields as necessary
         ]);
 
-        // Find the project task by ID
         $project = Project::findOrFail($id);
 
-        // Update the 'project_task_status' with the validated data
         $project->update([
             'project_status' => $validatedData['project_status']
         ]);
 
-        // Return a response, usually a success message or the updated resource
         return response()->json([
             'message' => 'Project status is set successfully!',
             'project' => $project
@@ -240,7 +217,6 @@ class ProjectController extends Controller
     }
     public function updateProjectDetails(Request $request, $id)
     {
-        // Validate the incoming request data
         $validatedData = $request->validate([
             'company_id' => 'required',
             'project_title' => 'required',
@@ -250,13 +226,10 @@ class ProjectController extends Controller
             'project_next_step' => 'required',
             'standing_agreements' => 'required',
             'due_date' => 'required',
-            // Add other fields as necessary
         ]);
 
-        // Find the project by ID
         $project = Project::findOrFail($id);
 
-        // Update the project with the validated data
         $project->update([
             'company_id' => $validatedData['company_id'],
             'project_title' => $validatedData['project_title'],
@@ -268,7 +241,6 @@ class ProjectController extends Controller
             'due_date' => $validatedData['due_date'],
         ]);
 
-        // Return a response, usually a success message or the updated resource
         return response()->json([
             'message' => 'Project updated successfully!',
             'user' => $project
@@ -283,20 +255,16 @@ class ProjectController extends Controller
      */
     public function destroy($id)
     {
-        // Find the project by ID
         $project = Project::find($id);
 
         if (!$project) {
-            // Return a 404 response if the project is not found
             return response()->json([
                 'message' => 'Project not found'
             ], Response::HTTP_NOT_FOUND);
         }
 
-        // Delete the project
         $project->delete();
 
-        // Return a 200 response indicating the project was deleted
         return response()->json([
             'message' => 'Project deleted successfully'
         ], Response::HTTP_OK);

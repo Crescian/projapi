@@ -7,7 +7,7 @@ use App\Models\ProjectTask;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB; // Import the DB facade
+use Illuminate\Support\Facades\DB;
 
 class ProjectTaskController extends Controller
 {
@@ -28,30 +28,22 @@ class ProjectTaskController extends Controller
         ->whereBetween(\DB::raw('DATE(due_date)'), [\DB::raw('CURRENT_DATE'), \DB::raw('DATE(due_date)')])
         ->get();
     
-        // Initialize an array to hold notifications
         $notifications = [];
     
-        // Loop through each task
         foreach ($tasks as $task) {
-            // Fetch users involved with this specific task
             $involvedUsers = DB::table('project_task_individual_involved')
                 ->where('project_task_id', $task->id)
-                ->pluck('users_id'); // Use pluck to get an array of user IDs
+                ->pluck('users_id');
     
-            // Loop through each user ID
             foreach ($involvedUsers as $userId) {
-                // Convert string to Carbon instance before using it
                 $dueDate = Carbon::parse($task->due_date);
-                // Check if a similar notification already exists
                 $exists = DB::table('notifications')
                     ->where('project_id', $task->project_id)
                     ->where('users_id', $userId)
                     ->where('notification', 'DUE DATE: ' . $dueDate->format('Y-m-d') . '. You have only ' . $task->gap_in_days . ' days for this task: ' . $task->task_title)
                     ->exists();
 
-                    // If it does not exist, prepare it for insertion
                     if (!$exists) {
-                        // If gap_in_days is greater than 0
                         if ($task->gap_in_days > 0) {
                             $notifications[] = [
                                 'project_id' => $task->project_id,
@@ -61,7 +53,6 @@ class ProjectTaskController extends Controller
                                 'updated_at' => now()
                             ];
                         }
-                        // Else if gap_in_days is 0 (last day)
                         else if ($task->gap_in_days == 0) {
                             $notifications[] = [
                                 'project_id' => $task->project_id,
@@ -76,7 +67,6 @@ class ProjectTaskController extends Controller
             }
         }
     
-        // Insert all new notifications into the 'notifications' table
         if (!empty($notifications)) {
             DB::table('notifications')->insert($notifications);
         }
@@ -126,7 +116,7 @@ class ProjectTaskController extends Controller
             return response()->json([
                 'status' => true,
                 'message'=> 'Project Task created successfully',
-                'id' => $projectTask->id // Include the newly created task's id
+                'id' => $projectTask->id
             ],201);
         }catch(\Throwable $th){
             return response()->json([
@@ -159,18 +149,13 @@ class ProjectTaskController extends Controller
      */
     public function show($projectId)
     {
-        // Fetch the item by ID
-        // $projectTask = ProjectTask::find($id);
         $projectTasks = ProjectTask::where('project_id', $projectId)->get();
 
-        // Check if the item exists
         if (!$projectTasks) {
             return response()->json(['message' => 'Item not found'], 404);
         }
 
-        // Return the item as a JSON response
         return response()->json($projectTasks, 200);
-        
     }
 
     /**
@@ -193,21 +178,16 @@ class ProjectTaskController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Validate the incoming request data
         $validatedData = $request->validate([
             'project_task_status' => 'required',
-            // Add other fields as necessary
         ]);
 
-        // Find the project task by ID
         $projectTask = ProjectTask::findOrFail($id);
 
-        // Update the 'project_task_status' with the validated data
         $projectTask->update([
             'project_task_status' => $validatedData['project_task_status']
         ]);
 
-        // Return a response, usually a success message or the updated resource
         return response()->json([
             'message' => 'Project task set to Completed successfully!',
             'project' => $projectTask
@@ -215,19 +195,15 @@ class ProjectTaskController extends Controller
     }
     public function update2(Request $request, $id)
     {
-        // Validate the incoming request data
         $validatedData = $request->validate([
             'task_title' => 'required',
             'urgency' => 'required',
             'due_date' => 'required',
             'remarks' => 'required',
-            // Add other fields as necessary
         ]);
 
-        // Find the project task by ID
         $projectTask = ProjectTask::findOrFail($id);
 
-        // Update the 'project_task_status' with the validated data
         $projectTask->update([
             'task_title' => $validatedData['task_title'],
             'urgency' => $validatedData['urgency'],
@@ -235,7 +211,6 @@ class ProjectTaskController extends Controller
             'remarks' => $validatedData['remarks']
         ]);
 
-        // Return a response, usually a success message or the updated resource
         return response()->json([
             'message' => 'Set Remarks successfully!',
             'project task' => $projectTask
@@ -251,20 +226,16 @@ class ProjectTaskController extends Controller
      */
     public function destroy($id)
     {
-        // Find the project by ID
         $projectTask = ProjectTask::find($id);
 
         if (!$projectTask) {
-            // Return a 404 response if the project is not found
             return response()->json([
                 'message' => 'Project Task not found'
             ], Response::HTTP_NOT_FOUND);
         }
 
-        // Delete the project
         $projectTask->delete();
 
-        // Return a 200 response indicating the project was deleted
         return response()->json([
             'message' => 'Project Task deleted successfully'
         ], Response::HTTP_OK);

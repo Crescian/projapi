@@ -14,7 +14,7 @@ class NotificationsController extends Controller
      */
     public function index()
     {
-        //
+        
     }
 
     /**
@@ -24,7 +24,7 @@ class NotificationsController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
@@ -35,7 +35,7 @@ class NotificationsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
     }
 
     /**
@@ -46,16 +46,12 @@ class NotificationsController extends Controller
      */
     public function show($usersId)
     {
-        // Fetch the item by ID
-        // $projectTask = ProjectTask::find($id);
         $notification = notifications::where('users_id', $usersId)->get();
 
-        // Check if the item exists
         if (!$notification) {
             return response()->json(['message' => 'Item not found'], 404);
         }
 
-        // Return the item as a JSON response
         return response()->json($notification, 200);
         
         return response()->json(['message' => 'Scan successfully'], 404);
@@ -81,15 +77,12 @@ class NotificationsController extends Controller
      */
     public function updateRead($id)
     {
-        // Find the project by ID
         $notifications = notifications::findOrFail($id);
 
-        // Update the notifications with the validated data
         $notifications->update([
             'read' => true,
         ]);
 
-        // Return a response, usually a success message or the updated resource
         return response()->json([
             'message' => 'Notifications updated successfully!',
             'output' => $notifications
@@ -97,7 +90,7 @@ class NotificationsController extends Controller
     }
     public function update(Request $request, notifications $notifications)
     {
-        //
+
     }
 
     /**

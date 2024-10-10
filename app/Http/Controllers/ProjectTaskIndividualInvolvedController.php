@@ -83,8 +83,6 @@ class ProjectTaskIndividualInvolvedController extends Controller
      */
     public function show($projectTaskId)
     {
-        // Fetch the item by ID
-        // $projectTask = ProjectTask::find($id);
         $projectTaskIndividual = DB::table('project_task_individual_involved')
         ->join('users', 'users.id', '=', 'project_task_individual_involved.users_id')
         ->join('project_individual_involved', 'project_individual_involved.users_id', '=', 'project_task_individual_involved.users_id')
@@ -97,26 +95,18 @@ class ProjectTaskIndividualInvolvedController extends Controller
         ->distinct()
         ->get();
 
-
-        // $projectTaskIndividual = project_task_individual_involved::where('project_task_id', $projectTaskId)->get();
-
-        // Check if the item exists
         if (!$projectTaskIndividual) {
             return response()->json(['message' => 'Item not found'], 404);
         }
-        // Return the item as a JSON response
         return response()->json($projectTaskIndividual, 200);
     }
     public function show2($projectTaskId)
     {
-        // Fetch the item by ID
-        // $projectTask = ProjectTask::find($id);
         $projectTaskIndividual = DB::table('project_task_individual_involved')
         ->join('project_tasks', 'project_task_individual_involved.project_task_id', '=', 'project_tasks.id')
         ->join('project_individual_involved', 'project_task_individual_involved.users_id', '=', 'project_individual_involved.users_id')
         ->where('project_task_individual_involved.users_id', $projectTaskId)
-        ->select('project_tasks.id','project_tasks.project_id','project_tasks.urgency','task_title','project_tasks.due_date','project_tasks.project_task_status','remarks') // Select specific columns if needed
-        // ->select('project_tasks.id','project_tasks.project_id','project_tasks.urgency','task_title','project_tasks.due_date','remarks') // Select specific columns if needed
+        ->select('project_tasks.id','project_tasks.project_id','project_tasks.urgency','task_title','project_tasks.due_date','project_tasks.project_task_status','remarks')
         ->distinct()
         ->get();
 
@@ -148,7 +138,7 @@ class ProjectTaskIndividualInvolvedController extends Controller
      */
     public function update(Request $request, project_task_individual_involved $project_task_individual_involved)
     {
-        //
+
     }
 
     /**
@@ -164,15 +154,12 @@ class ProjectTaskIndividualInvolvedController extends Controller
             'project_task_id' => 'required',
             'users_id' => 'required'
         ]);
-        // Find the project by ID
         
         $project_task_individual_involved = project_task_individual_involved::where('users_id', $request->users_id)
         ->where('project_task_id', $request->project_task_id)
-        ->first(); // Use get() if you expect multiple records
-        // $project_task_individual_involved = project_task_individual_involved::find($id);
+        ->first();
 
         if (!$project_task_individual_involved) {
-            // Return a 404 response if the project is not found
             return response()->json([
                 'message' => 'Project task individual involved not found'
             ], Response::HTTP_NOT_FOUND);
@@ -180,7 +167,6 @@ class ProjectTaskIndividualInvolvedController extends Controller
 
         $project_task_individual_involved->delete();
 
-        // Return a 200 response indicating the project was deleted
         return response()->json([
             'message' => 'Project task individual involved deleted successfully'
         ], Response::HTTP_OK);
